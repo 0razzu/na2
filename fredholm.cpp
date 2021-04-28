@@ -19,21 +19,56 @@ void create_matrixes(double lambda, double (* ker)(double, double), double (* f)
 }
 
 
-void revert_tr(double** u, unsigned n) {
-    for (unsigned i = 0; i < n; i++)
-        u[i][i] = 1. / u[i][i];
+bool accuracy_achieved(double* x_prev, double* x, unsigned n, double eps) {
+    double x_prev_max = 0, x_max = 0;
     
-    for (unsigned i = 0; i < n; i++)
-        for (unsigned j = 0; j < i; j++) {
-            double sum = 0;
-            for (unsigned k = j; k < i; k++)
-                sum += u[i][k] * u[k][j];
-            
-            u[i][j] = -u[i][i] * sum;
+    for (unsigned i = 0; i < n; i++) {
+        double x_prev_cur = fabs(x_prev[i]);
+        double x_cur = fabs(x[i]);
+        
+        if (x_prev_cur > x_prev_max)
+            x_prev_max = x_prev_cur;
+        
+        if (x_cur > x_max)
+            x_max = x_cur;
     }
+    
+    return fabs(x_max - x_prev_max) < eps;
 }
 
 
-double solve(double** a, double* f, unsigned n) {
-    return n;
+int solve(double** a, double* f, double* x, unsigned n, double eps, unsigned max_it, unsigned& it) {
+    int code = 0;
+    it = 0;
+    
+    for (unsigned i = 0; i < n; i++) {
+        for (unsigned j = 0; j < i; j++)
+            a[i][j] /= a[i][i];
+        for (unsigned j = i + 1; j < n; j++)
+            a[i][j] /= a[i][i];
+        
+        f[i] /= a[i][i];
+    }
+    
+    double* x_prev = new double[n];
+    
+    do {
+        for (unsigned i = 0; i < n; i++)
+            x_prev[i] = x[i];
+        
+        for (unsigned i = 0; i < n; i++) {
+            x[i] = f[i];
+            
+            for (unsigned j = 0; j < i; j++)
+                x[i] -= a[i][j] * x[j];
+            for (unsigned j = i + 1; j < n; j++)
+                x[i] -= a[i][j] * x_prev[j];
+        }
+        
+        it++;
+    } while (!accuracy_achieved(x_prev, x, n, eps) && it < max_it);
+    
+    delete[] x_prev;
+    
+    return code;
 }
