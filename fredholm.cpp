@@ -19,7 +19,7 @@ void create_matrixes(double lambda, double (* ker)(double, double), double (* f)
 }
 
 
-bool accuracy_achieved(double* x_prev, double* x, unsigned n, double eps) {
+double compute_accuracy(double* x_prev, double* x, unsigned n) {
     double x_prev_max = 0, x_max = 0;
     
     for (unsigned i = 0; i < n; i++) {
@@ -33,12 +33,11 @@ bool accuracy_achieved(double* x_prev, double* x, unsigned n, double eps) {
             x_max = x_cur;
     }
     
-    return fabs(x_max - x_prev_max) < eps;
+    return fabs(x_max - x_prev_max);
 }
 
 
-int solve(double** a, double* f, double* x, unsigned n, double eps, unsigned max_it, unsigned& it) {
-    int code = 0;
+int solve(double** a, double* f, double* x, unsigned n, double eps, unsigned max_it, unsigned& it, double& accuracy) {
     it = 0;
     
     for (unsigned i = 0; i < n; i++) {
@@ -66,9 +65,12 @@ int solve(double** a, double* f, double* x, unsigned n, double eps, unsigned max
         }
         
         it++;
-    } while (!accuracy_achieved(x_prev, x, n, eps) && it < max_it);
+    } while (eps < (accuracy = compute_accuracy(x_prev, x, n)) && it < max_it);
     
     delete[] x_prev;
     
-    return code;
+    if (eps < accuracy)
+        return ACC_NOT_ACHVD;
+    
+    return OK;
 }
