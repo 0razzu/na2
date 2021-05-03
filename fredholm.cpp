@@ -20,20 +20,16 @@ void create_matrixes(double lambda, double (* ker)(double, double), double (* f)
 
 
 double compute_accuracy(double* x_prev, double* x, unsigned n) {
-    double x_prev_max = 0, x_max = 0;
+    double max_dif = 0;
     
     for (unsigned i = 0; i < n; i++) {
-        double x_prev_cur = fabs(x_prev[i]);
-        double x_cur = fabs(x[i]);
+        double cur_dif = abs(x[i] - x_prev[i]);
         
-        if (x_prev_cur > x_prev_max)
-            x_prev_max = x_prev_cur;
-        
-        if (x_cur > x_max)
-            x_max = x_cur;
+        if (cur_dif > max_dif)
+            max_dif = cur_dif;
     }
     
-    return fabs(x_max - x_prev_max);
+    return max_dif;
 }
 
 
