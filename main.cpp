@@ -1,4 +1,5 @@
 #include "fredholm.hpp"
+#include "invert.hpp"
 #include <iostream>
 #include <iomanip>
 #include <cmath>
@@ -75,19 +76,6 @@ int main(int argc, const char* argv[]) {
     std::cout << "Quantity of iterations: " << it << std::endl;
     std::cout << "Accuracy: " << accuracy << std::endl;
     std::cout << "Error norm: " << z_norm << std::endl << std::endl;
-    
-//    a[0][0] = 1; a[0][1] = 0; a[0][2] = 0; a[0][3] = 0;
-//    a[1][0] = 5; a[1][1] = 2; a[1][2] = 0; a[1][3] = 0;
-//    a[2][0] = 8; a[2][1] = 5; a[2][2] =-2; a[2][3] = 0;
-//    a[3][0] =-1; a[3][1] = 4; a[3][2] = 2; a[3][3] = 4;
-//
-//    revert_tr(a, N);
-//
-//    for (unsigned i = 0; i < N; i++) {
-//        for (unsigned j = 0; j < N; j++)
-//            std::cout << std::setw(WIDTH) << a[i][j] << '\t';
-//        std::cout << '\n';
-//    }
     
     for (unsigned i = 0; i < N; i++)
         delete[] a[i];
