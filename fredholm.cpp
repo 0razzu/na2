@@ -1,7 +1,7 @@
 #include "fredholm.hpp"
 
 
-void create_matrixes(double lambda, double (* ker)(double, double), double (* f)(double), double** a, double* f_i, unsigned n) {
+void create_matrixes(double lambda, double (* ker)(double, double), double (* f)(double), double** a, double* f_n, unsigned n) {
     const double h = 1. / n;
     
     for (unsigned i = 0; i < n; i++) {
@@ -14,7 +14,7 @@ void create_matrixes(double lambda, double (* ker)(double, double), double (* f)
                 a[i][j]++;
         }
         
-        f_i[i] = f(s_i);
+        f_n[i] = f(s_i);
     }
 }
 
